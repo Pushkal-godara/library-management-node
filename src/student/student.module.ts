@@ -9,5 +9,6 @@ import { StudentProviders } from "./student.provider";
     imports: [SequelizeModule.forFeature([Student])],
     controllers: [StudentController],
     providers: [StudentService, ...StudentProviders],
+    exports: [StudentService],
 })
 export class StudentModule {}

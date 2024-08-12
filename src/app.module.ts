@@ -1,15 +1,3 @@
-import { UserModule } from './user/user.module'; 
-import { BookModule } from './book/book.module';
-import { LoanModule } from './loan/loan.module';
-import { AdminModule } from './admin/admin.module';
-import { AuditlogModule } from './auditlog/auditlog.module';
-import { CatalogModule } from './catalog/catalog.module';
-import { FeedbackModule } from './feedback/feedback.module';
-import { FineModule } from './fine/fine.module';
-import { LibrarianModule } from './librarian/librarian.module';
-import { NotificationModule } from './notification/notification.module';
-import { ReservationModule } from './reservation/reservation.module';
-
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from './user/entities/user.entity';
@@ -24,6 +12,11 @@ import { Librarian } from './librarian/entities/librarian.entity';
 import { Notification } from './notification/entities/notification.entity';
 import { Reservation } from './reservation/entities/reservation.entity';
 
+import { AppServiceModule } from './app.service.module';
+// import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { AuthModule } from './auth/auth.module';
+
 @Module({
   imports: [
     SequelizeModule.forRoot({
@@ -37,7 +30,10 @@ import { Reservation } from './reservation/entities/reservation.entity';
       autoLoadModels: true,
       synchronize: false,
     }),
-    UserModule, BookModule, LoanModule, AdminModule, AuditlogModule, CatalogModule, FeedbackModule, FineModule, LibrarianModule, NotificationModule, ReservationModule
+    AppServiceModule,
+    AuthModule
   ],
+  // controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}

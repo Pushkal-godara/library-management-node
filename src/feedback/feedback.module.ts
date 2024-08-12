@@ -8,6 +8,7 @@ import { FeedbackProviders } from "./feedback.provider";
 @Module({
     imports: [SequelizeModule.forFeature([Feedback])],
     controllers: [FeedbackController],
-    providers: [FeedbackService, ...FeedbackProviders]
+    providers: [FeedbackService, ...FeedbackProviders],
+    exports: [FeedbackService],
 })
 export class FeedbackModule {}

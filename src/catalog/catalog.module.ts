@@ -9,6 +9,7 @@ import { CatalogProviders } from "./catalog.provider";
 @Module({
     imports: [SequelizeModule.forFeature([Catalog])],
     controllers: [CatalogController],
-    providers: [CatalogService, ...CatalogProviders]
+    providers: [CatalogService, ...CatalogProviders],
+    exports: [CatalogService],
 })
 export class CatalogModule {}

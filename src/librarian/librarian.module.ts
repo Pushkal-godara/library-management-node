@@ -8,6 +8,7 @@ import { LibrarianProviders } from "./librarian.provider";
 @Module({
     imports: [SequelizeModule.forFeature([Librarian])],
     controllers: [LibrarianController],
-    providers: [LibrarianService, ...LibrarianProviders]
+    providers: [LibrarianService, ...LibrarianProviders],
+    exports: [LibrarianService],
 })
 export class LibrarianModule {}

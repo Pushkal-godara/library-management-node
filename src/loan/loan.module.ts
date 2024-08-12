@@ -9,6 +9,7 @@ import { LoanProviders } from "./loan.provider";
 @Module({
     imports: [SequelizeModule.forFeature([Loan])], 
     controllers: [LoanController],
-    providers: [LoanService, ...LoanProviders]
+    providers: [LoanService, ...LoanProviders],
+    exports: [LoanService],
 })
 export class LoanModule {}

@@ -9,6 +9,7 @@ import { FineProviders } from "./fine.provider";
 @Module({
     imports: [SequelizeModule.forFeature([Fine])],
     controllers: [FineController],
-    providers: [FineService, ...FineProviders]
+    providers: [FineService, ...FineProviders],
+    exports: [FineService],
 })
 export class FineModule {}

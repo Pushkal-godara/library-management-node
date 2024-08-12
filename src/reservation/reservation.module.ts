@@ -8,6 +8,7 @@ import { ReservationProviders } from "./reservation.provider";
 @Module({
     imports: [SequelizeModule.forFeature([Reservation])],
     controllers: [ReservationController],
-    providers: [ReserveService, ...ReservationProviders]
+    providers: [ReserveService, ...ReservationProviders],
+    exports: [ReserveService],
 })
 export class ReservationModule {}

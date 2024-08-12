@@ -28,5 +28,5 @@ export class Book extends Model<Book> {
     @Column({
         type: DataType.INTEGER
     })
-    publiction_year: number;
+    publication_year: number;
 }

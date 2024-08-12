@@ -9,6 +9,7 @@ import { AuditlogProviders } from "./auditlog.provider";
 @Module({
     imports: [SequelizeModule.forFeature([Auditlog])],
     controllers: [AuditlogController],
-    providers: [AuditlogService, ...AuditlogProviders]
+    providers: [AuditlogService, ...AuditlogProviders],
+    exports: [AuditlogService],
 })
 export class AuditlogModule {}

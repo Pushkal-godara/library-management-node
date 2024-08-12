@@ -10,10 +10,25 @@ async function bootstrap() {
   .setTitle('Library-svc')
   .setDescription('The library API description')
   .setVersion('1.0')
-  .addTag('library')
+  .addBearerAuth(
+    {
+      type: 'http',
+      scheme: 'bearer',
+      bearerFormat: 'JWT',
+      name: 'JWT',
+      description: 'Enter JWT token',
+      in: 'header',
+    },
+    'access-token',
+  )
   .build();
 const document = SwaggerModule.createDocument(app, config);
-SwaggerModule.setup('api', app, document);
+SwaggerModule.setup('api', app, document, {
+  swaggerOptions: {
+    docExpansion: 'none', // This line ensures all docs are collapsed by default
+    persistAuthorization: true, // This will persist authorization between page reloads
+  },
+});
 
   const port = 1111;
   // const host = '127.0.0.1';

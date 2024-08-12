@@ -24,6 +24,6 @@ export class Catalog extends Model<Catalog> {
     @Column({
         type: DataType.STRING   // Fiction or Science or Novel etc...
     })
-    catagory: string;
+    category: string;
 
 }
