@@ -1,4 +1,5 @@
-import { Table, Column, Model, DataType, AllowNull } from "sequelize-typescript";
+import { Table, Column, Model, DataType, AllowNull, ForeignKey, BelongsTo} from "sequelize-typescript";
+import { Role } from "src/auth/entities/role.entity";
 
 @Table({
     tableName: 'users',
@@ -6,7 +7,7 @@ import { Table, Column, Model, DataType, AllowNull } from "sequelize-typescript"
 })
 export class User extends Model<User> {
 
-    // Users can perform various actions depending on their role(Member/Librarian/Admin)
+    // Users can perform various actions depending on their role(Librarian/Admin)
 
     @Column({
         type: DataType.UUID,
@@ -32,14 +33,15 @@ export class User extends Model<User> {
     })
     password: string;
 
-    @AllowNull(false)
-    @Column({
-        type: DataType.STRING
-    })
-    role: string;
+    @ForeignKey(() => Role)
+    @Column
+    role_id: number;
 
     @Column({
         type: DataType.STRING
     })
     contact_info: string;
+
+    @BelongsTo(() => Role)
+    role: Role;   
 }
