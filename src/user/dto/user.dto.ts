@@ -40,4 +40,11 @@ export class CreateUserDto {
     })
     @IsString()
     contact_info: string;
+
+    @ApiProperty({
+        type: String,
+        description: "User role",
+        example: "Admin/Librarian/student"
+    })
+    role: string;
 }
