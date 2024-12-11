@@ -9,9 +9,9 @@ export class Librarian extends User {
 
     // Manage operation of library, adding new books/updating book info processing loans & return.
 
-    @Column({
-        type: DataType.STRING,
-        defaultValue: 'Librarian'
-    })
-    role: string;
+    // @Column({
+    //     type: DataType.STRING,
+    //     defaultValue: 'Librarian'
+    // })
+    // role: string;
 }

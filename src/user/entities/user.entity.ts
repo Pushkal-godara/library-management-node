@@ -7,7 +7,7 @@ import { Role } from "src/auth/entities/role.entity";
 })
 export class User extends Model<User> {
 
-    // Users can perform various actions depending on their role(Librarian/Admin)
+    // Users can perform various actions depending on their role(Librarian/Admin/Student)
 
     @Column({
         type: DataType.UUID,

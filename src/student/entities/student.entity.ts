@@ -8,9 +8,9 @@ import { User } from "src/user/entities/user.entity";
 export class Student extends User {
     // 
 
-    @Column({
-        type: DataType.STRING,
-        defaultValue: 'Student'
-    })
-    role: string;
+    // @Column({
+    //     type: DataType.STRING,
+    //     defaultValue: 'Student'
+    // })
+    // role: string;
 }

@@ -10,6 +10,9 @@ import { Fine } from '../fine/entities/fine.entity';
 import { Librarian } from '../librarian/entities/librarian.entity';
 import { Notification } from '../notification/entities/notification.entity';
 import { Reservation } from '../reservation/entities/reservation.entity';
+import { Role } from 'src/auth/entities/role.entity';
+import { Permission } from 'src/auth/entities/permission.entity';
+import { RolePermission } from 'src/auth/entities/role-permission.entity';
 
 export const databaseConfig: SequelizeModuleOptions = {
   dialect: 'mysql',
@@ -29,7 +32,10 @@ export const databaseConfig: SequelizeModuleOptions = {
     Fine, 
     Librarian, 
     Notification, 
-    Reservation
+    Reservation,
+    Role,
+    Permission,
+    RolePermission,
   ],
   autoLoadModels: true,
   synchronize: false,

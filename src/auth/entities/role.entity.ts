@@ -1,4 +1,4 @@
-import { Table, Column, Model, DataType, AllowNull, HasMany } from "sequelize-typescript";
+import { Table, Column, Model, DataType, AllowNull, BelongsToMany, HasMany } from "sequelize-typescript";
 
 import { User } from "src/user/entities/user.entity";
 import { Permission } from "./permission.entity";
@@ -18,4 +18,7 @@ export class Role extends Model {
 
     @HasMany(() => User)
     users: User[];
+
+    @BelongsToMany(() => Permission, () => RolePermission)
+    permissions: Permission[];
 }

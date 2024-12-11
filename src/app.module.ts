@@ -46,6 +46,7 @@ import { databaseConfig } from './config/database.config';
 import { AppServiceModule } from './app.service.module';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
+import { DatabaseModule } from './database/database.module';
 
 @Module({
   imports: [
@@ -54,7 +55,8 @@ import { AuthModule } from './auth/auth.module';
     }),
     SequelizeModule.forRoot(databaseConfig),
     AppServiceModule,
-    AuthModule
+    AuthModule,
+    DatabaseModule
   ],
   providers: [AppService],
 })

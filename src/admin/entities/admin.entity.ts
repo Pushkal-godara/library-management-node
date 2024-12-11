@@ -8,9 +8,9 @@ import { User } from "src/user/entities/user.entity";
 export class Admin extends User {
     // Manages system setting, user roles & maintain system.
 
-    @Column({
-        type: DataType.STRING,
-        defaultValue: 'Admin'
-    })
-    role: string;
+    // @Column({
+    //     type: DataType.STRING,
+    //     defaultValue: 'Admin'
+    // })
+    // role: string;
 }

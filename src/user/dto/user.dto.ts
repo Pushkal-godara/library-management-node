@@ -42,9 +42,9 @@ export class CreateUserDto {
     contact_info: string;
 
     @ApiProperty({
-        type: String,
-        description: "User role",
-        example: "Admin/Librarian/student"
+        type: Number,
+        description: "Admin/Librarian/student",
+        example: '1/2/3'
     })
-    role: string;
+    role_id: number;
 }

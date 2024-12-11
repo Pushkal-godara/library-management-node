@@ -1,4 +1,4 @@
-import { Table, Column, Model, DataType, AllowNull, HasMany, BelongsToMany } from "sequelize-typescript";
+import { Table, Column, Model, DataType, AllowNull, BelongsToMany } from "sequelize-typescript";
 
 import { Role } from "./role.entity";
 import { RolePermission } from "./role-permission.entity";
@@ -13,7 +13,7 @@ export class Permission extends Model {
     action: string;    // e.g., 'create', 'read', 'update', 'delete'
 
     @Column
-    resources: any;    // e.g., 'books', 'users', 'loans'
+    resource: string;    // e.g., 'books', 'users', 'loans'
 
     @BelongsToMany(() => Role, () => RolePermission)
     roles: Role[];
