@@ -4,10 +4,12 @@ import { User } from "./entities/user.entity";
 import { UserController } from "./user.controller";
 import { UserService } from "./user.service";
 import { UserProviders } from "./user.provider";
+import { Role } from "src/auth/entities/role.entity";
+import { Permission } from "src/auth/entities/permission.entity";
 
 
 @Module({
-    imports: [SequelizeModule.forFeature([User])],
+    imports: [SequelizeModule.forFeature([User, Role, Permission])],
     controllers: [UserController],
     providers: [UserService, ...UserProviders],
     exports: [UserService, ...UserProviders],

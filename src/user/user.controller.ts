@@ -1,8 +1,11 @@
-import { Controller, Get, Put, Post, Delete, Body, Param, Patch } from '@nestjs/common';
+import { Controller, Get, Put, Post, Delete, Body, Param, Patch, Req } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+
+import { CreateStaffDto } from "src/auth/dto/signup.dto";
 import { User } from './entities/user.entity';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/user.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { request } from 'http';
 
 @ApiTags('User')
 @Controller('users')
@@ -15,26 +18,29 @@ export class UserController {
         return users;
     }
 
-    @Get(':id')
-    async findOne(@Param('id') id: string): Promise<User> {
-        const user = await this.userService.findOne(id);
+    // @Get(':id')
+    // async findOne(@Param('id') id: string): Promise<User> {
+    //     const user = await this.userService.findOne(id);
+    //     return user;
+    // }
+
+    @Post('staff')
+    async createStaffUser(
+        @Req() request,
+        @Body() createStaffDto: CreateStaffDto
+    ): Promise<User> {
+        const user = await this.userService.createStaffUser( createStaffDto);
         return user;
     }
 
-    @Post()
-    async create(@Body() createUserDto: CreateUserDto): Promise<User> {
-        const user = await this.userService.create(createUserDto);
-        return user;
-    }
+    // @Patch(':id')
+    // async update(@Param('id') id: string, @Body() updateUserDto: CreateUserDto): Promise<User> {
+    //     const user = await this.userService.update(id, updateUserDto);
+    //     return user;
+    // }
 
-    @Patch(':id')
-    async update(@Param('id') id: string, @Body() updateUserDto: CreateUserDto): Promise<User> {
-        const user = await this.userService.update(id, updateUserDto);
-        return user;
-    }
-
-    @Delete(':id')
-    async remove(@Param('id') id: string): Promise<void> {
-        await this.userService.remove(id);
-    }
+    // @Delete(':id')
+    // async remove(@Param('id') id: string): Promise<void> {
+    //     await this.userService.remove(id);
+    // }
 }

@@ -44,7 +44,6 @@ SwaggerModule.setup('api', app, document, {
 });
 
   const port = 1111;
-  // const host = '127.0.0.1';
   const host = 'localhost';
   await app.listen(port, host);
   const baseUrl = `http://${host}:${port}`;
