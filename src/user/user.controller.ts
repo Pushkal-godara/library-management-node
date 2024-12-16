@@ -1,10 +1,9 @@
 import { Controller, Get, Put, Post, Delete, Body, Param, Patch, Req } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
-import { CreateStaffDto } from "src/auth/dto/signup.dto";
 import { User } from './entities/user.entity';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto/user.dto';
+import { CreateStaffDto } from './dto/user.dto';
 import { request } from 'http';
 
 @ApiTags('User')
@@ -26,7 +25,6 @@ export class UserController {
 
     @Post('staff')
     async createStaffUser(
-        @Req() request,
         @Body() createStaffDto: CreateStaffDto
     ): Promise<User> {
         const user = await this.userService.createStaffUser( createStaffDto);

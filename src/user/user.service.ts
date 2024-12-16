@@ -4,9 +4,9 @@ import * as bcrypt from 'bcrypt';
 
 import { User } from "./entities/user.entity";
 import { USER_REPO } from "src/common/constant";
-import { CreateStaffDto } from "src/auth/dto/signup.dto";
+// import { CreateStaffDto } from "src/auth/dto/signup.dto";
 import { Role } from "src/auth/entities/role.entity";
-// import { CreateUserDto } from "./dto/user.dto";
+import { CreateStaffDto } from "./dto/user.dto";
 
 @Injectable()
 export class UserService {
@@ -20,7 +20,7 @@ export class UserService {
     // Admin-only method to create staff users (librarians or admins)
     async createStaffUser(createStaffDto: CreateStaffDto): Promise<any> {
         // Verify the creator is an admin
-        const isAdmin = await this.hasRole(createStaffDto.user_id, 'admin');
+        const isAdmin = await this.hasRole(createStaffDto.admin_id, 'admin');
         if (!isAdmin) {
             throw new UnauthorizedException('Only administrators can create staff accounts');
         }
@@ -46,7 +46,9 @@ export class UserService {
 
         // Create staff user
         const newStaffUser = await this.usersRepo.create({
-            ...createStaffDto,
+            name: createStaffDto.name,
+            email: createStaffDto.email,
+            contact_info: createStaffDto.contact_info,
             password: hashedPassword,
             role_id: createStaffDto.role_id
         });
