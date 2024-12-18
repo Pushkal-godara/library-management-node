@@ -22,8 +22,21 @@ export class SignupDto {
 }
 
 
-export class CreateStaffDto extends SignupDto {
+export class LoginDto {
 
-  @ApiProperty({ example: '1' })
+  @ApiProperty()
+  @IsEmail()
+  email: string;
+
+  @ApiProperty()
+  password: string;
+
+}
+
+
+export class GetRoleDto {
+
+  @ApiProperty()
   role_id: number;
+  
 }

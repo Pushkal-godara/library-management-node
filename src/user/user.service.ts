@@ -4,9 +4,8 @@ import * as bcrypt from 'bcrypt';
 
 import { User } from "./entities/user.entity";
 import { USER_REPO } from "src/common/constant";
-// import { CreateStaffDto } from "src/auth/dto/signup.dto";
 import { Role } from "src/auth/entities/role.entity";
-import { CreateStaffDto } from "./dto/user.dto";
+import { CreateStaffDto, UpdateUserDto } from "./dto/user.dto";
 
 @Injectable()
 export class UserService {
@@ -69,26 +68,26 @@ export class UserService {
     }
 
     // Admin-only method to update user role
-    async updateUserRole(adminUserId: string, userId: number, newRoleId: number): Promise<User> {
+    async updateUserRole(updateUserDto: UpdateUserDto): Promise<User> {
         // Verify the updater is an admin
-        const isAdmin = await this.hasRole(adminUserId, 'admin');
+        const isAdmin = await this.hasRole(updateUserDto.admin_id, 'admin');
         if (!isAdmin) {
             throw new UnauthorizedException('Only administrators can update user roles');
         }
 
         // Verify the role exists
-        const role = await this.roleModel.findByPk(newRoleId);
+        const role = await this.roleModel.findByPk(updateUserDto.role_id);
         if (!role) {
             throw new UnauthorizedException('Invalid role');
         }
 
-        // Update user's role
-        const user = await this.usersRepo.findByPk(userId);
+        // If user exists then Update user's role
+        const user = await this.usersRepo.findByPk(updateUserDto.user_id);
         if (!user) {
             throw new UnauthorizedException('User not found');
         }
 
-        user.role_id = newRoleId;
+        user.role_id = updateUserDto.role_id;
         await user.save();
 
         return user;
@@ -107,14 +106,6 @@ export class UserService {
     // async create(createUserDto: CreateUserDto): Promise<User> {
     //     const user = await this.usersRepo.create(createUserDto);
     //     return user;
-    // }
-
-    // async update(id: string, updateUserDto: CreateUserDto): Promise<User> {
-    //     await this.usersRepo.update(updateUserDto, {
-    //         where: { user_id: id },
-    //     });
-    //     const updatedUser = await this.usersRepo.findOne({ where: { user_id: id } });
-    //     return updatedUser;
     // }
 
     // async remove(id: string): Promise<void> {

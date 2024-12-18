@@ -73,3 +73,17 @@ export class CreateStaffDto {
     @ApiProperty({ example: '1' })
     role_id: number;
 }
+
+
+export class UpdateUserDto {
+    @ApiProperty()
+    @IsUUID()
+    admin_id: string;
+
+    @ApiProperty()
+    @IsUUID()
+    user_id: string;
+
+    @ApiProperty()
+    role_id: number;
+}

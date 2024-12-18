@@ -3,7 +3,7 @@ import { ApiTags } from '@nestjs/swagger';
 
 import { User } from './entities/user.entity';
 import { UserService } from './user.service';
-import { CreateStaffDto } from './dto/user.dto';
+import { CreateStaffDto, UpdateUserDto } from './dto/user.dto';
 import { request } from 'http';
 
 @ApiTags('User')
@@ -23,19 +23,19 @@ export class UserController {
     //     return user;
     // }
 
-    @Post('staff')
+    @Post('staff-signup')
     async createStaffUser(
         @Body() createStaffDto: CreateStaffDto
     ): Promise<User> {
-        const user = await this.userService.createStaffUser( createStaffDto);
+        const user = await this.userService.createStaffUser(createStaffDto);
         return user;
     }
 
-    // @Patch(':id')
-    // async update(@Param('id') id: string, @Body() updateUserDto: CreateUserDto): Promise<User> {
-    //     const user = await this.userService.update(id, updateUserDto);
-    //     return user;
-    // }
+    @Patch()
+    async update(@Body() updateUserDto: UpdateUserDto): Promise<User> {
+        const user = await this.userService.updateUserRole(updateUserDto);
+        return user;
+    }
 
     // @Delete(':id')
     // async remove(@Param('id') id: string): Promise<void> {

@@ -1,12 +1,12 @@
 import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { JwtService } from '@nestjs/jwt';
 import { Role } from './entities/role.entity';
 import { Permission } from './entities/permission.entity';
 import { RolePermission } from './entities/role-permission.entity';
 import { User } from '../user/entities/user.entity';
 import * as bcrypt from 'bcrypt';
-import { SignupDto } from './dto/signup.dto';
-
+import { LoginDto, SignupDto } from './dto/auth.dto';
 
 @Injectable()
 export class AuthService {
@@ -19,6 +19,7 @@ export class AuthService {
     private rolePermissionModel: typeof RolePermission,
     @InjectModel(User)
     private userModel: typeof User,
+    private jwtService: JwtService,
   ) {}
 
    // Public signup (for students only)
@@ -56,9 +57,33 @@ export class AuthService {
     return result as User;
   }
 
+//   SignIn function
+  async login(loginDto: LoginDto): Promise<{access_token: string}> {
+    try {
+        const isEmailExists = await this.userModel.findOne({
+            where: { email: loginDto.email }
+        });
+        const isPasswordValid = await bcrypt.compare(loginDto.password, isEmailExists.password);
 
-//   TODO SignIn method.
+        if (!isEmailExists || !isPasswordValid) {
+            throw new UnauthorizedException('Invalid email or password');
+        }
+        const payload = {
+          sub : isEmailExists.user_id,
+          email: isEmailExists.email,
+          role: isEmailExists.role_id,
+          name: isEmailExists.name
+        };
 
+        return {
+          access_token: this.jwtService.sign(payload)
+        };
+
+    } catch (error) {
+        console.error('Error in login: ', error);
+        return;
+    }
+  }
 
   // Check if user has required permission for a resource and action
   async checkPermission(userId: string, resource: string, action: string): Promise<boolean> {
