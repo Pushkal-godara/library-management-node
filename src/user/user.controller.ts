@@ -1,17 +1,20 @@
-import { Controller, Get, Put, Post, Delete, Body, Param, Patch, Req } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { Controller, Get, Put, Post, Delete, Body, Param, Patch, Req, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 import { User } from './entities/user.entity';
 import { UserService } from './user.service';
 import { CreateStaffDto, UpdateUserDto } from './dto/user.dto';
-import { request } from 'http';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+
 
 @ApiTags('User')
 @Controller('users')
 export class UserController {
     constructor(private readonly userService: UserService) {}
 
-    @Get()
+    @ApiBearerAuth('access_token')
+    @UseGuards(JwtAuthGuard)
+    @Get('get-all-users')
     async findAll(): Promise<User[]> {
         const users = await this.userService.findAll();
         return users;
@@ -25,13 +28,12 @@ export class UserController {
 
     @Post('staff-signup')
     async createStaffUser(
-        @Body() createStaffDto: CreateStaffDto
-    ): Promise<User> {
+        @Body() createStaffDto: CreateStaffDto): Promise<User> {
         const user = await this.userService.createStaffUser(createStaffDto);
         return user;
     }
 
-    @Patch()
+    @Patch('change-role')
     async update(@Body() updateUserDto: UpdateUserDto): Promise<User> {
         const user = await this.userService.updateUserRole(updateUserDto);
         return user;

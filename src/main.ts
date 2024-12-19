@@ -2,10 +2,12 @@ import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface';
+import * as passport from 'passport';
 // import { RbacSeeder } from './database/seeders/rbac.seeders';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.use(passport.initialize());
   // const seeder = app.get(RbacSeeder);
   // await seeder.seed();
   
@@ -15,16 +17,16 @@ async function bootstrap() {
   .setTitle('Library-svc')
   .setDescription('The library API description')
   .setVersion('1.0')
-  .addBearerAuth(
+  .addBearerAuth(       // This adds auth to Swagger UI
     {
       type: 'http',
       scheme: 'bearer',
       bearerFormat: 'JWT',
-      name: 'JWT',
+      name: 'Authorization',
       description: 'Enter JWT token',
       in: 'header',
     },
-    'access-token',
+    'access_token',
   )
   .build();
 

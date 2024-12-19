@@ -20,7 +20,7 @@ export class AuthController {
     return this.authService.login(loginDto);
   }
 
-  @Post('permissions')
+  @Post('permissions/by-role')
   @ApiBody({ type: GetRoleDto })
   async getRolePermissions(@Body() getRoleDto: GetRoleDto) {
     return this.authService.getRolePermissions(getRoleDto.role_id);

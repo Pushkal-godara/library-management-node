@@ -22,7 +22,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-   // Public signup (for students only)
+   // Public signup (sets default students role)
    async signup(signupDto: SignupDto): Promise<User> {
     // Check if user already exists
     const existingUser = await this.userModel.findOne({
@@ -74,9 +74,9 @@ export class AuthService {
           role: isEmailExists.role_id,
           name: isEmailExists.name
         };
-
+        const access_token = this.jwtService.sign(payload);
         return {
-          access_token: this.jwtService.sign(payload)
+          access_token: access_token
         };
 
     } catch (error) {
