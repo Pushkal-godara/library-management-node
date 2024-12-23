@@ -26,6 +26,8 @@ export class UserController {
     //     return user;
     // }
 
+    @ApiBearerAuth('access_token')
+    @UseGuards(JwtAuthGuard)
     @Post('staff-signup')
     async createStaffUser(
         @Body() createStaffDto: CreateStaffDto): Promise<User> {
@@ -33,6 +35,8 @@ export class UserController {
         return user;
     }
 
+    @ApiBearerAuth('access_token')
+    @UseGuards(JwtAuthGuard)
     @Patch('change-role')
     async update(@Body() updateUserDto: UpdateUserDto): Promise<User> {
         const user = await this.userService.updateUserRole(updateUserDto);

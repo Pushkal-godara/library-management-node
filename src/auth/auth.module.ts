@@ -9,15 +9,19 @@ import { AuthController } from "./auth.controller";
 import { JwtModule } from "@nestjs/jwt";
 import { PassportModule } from "@nestjs/passport";
 import { JwtStrategy } from "./strategies/jwt.strategy";
+import { ConfigService } from "@nestjs/config";
 
 
 @Module({
     imports: [
       SequelizeModule.forFeature([Role, Permission, RolePermission, User]),
       PassportModule.register({ defaultStrategy: 'jwt' }),
-      JwtModule.register({
-        secret: process.env.SECRET,
-        signOptions: { expiresIn: '1h'},
+      JwtModule.registerAsync({
+        inject: [ConfigService],
+        useFactory: (configService: ConfigService) => ({
+          secret: configService.get('SECRET'),
+          signOptions: { expiresIn: '1h' },
+        }),
       }),
     ],
     controllers: [AuthController],
