@@ -7,10 +7,13 @@ import { RolePermission } from './entities/role-permission.entity';
 import { User } from '../user/entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { LoginDto, SignupDto } from './dto/auth.dto';
+import { BlacklistedToken } from './entities/blacklisted-token.entity';
 
 @Injectable()
 export class AuthService {
   constructor(
+    @InjectModel(BlacklistedToken)
+    private blacklistedTokenModel: typeof BlacklistedToken,
     @InjectModel(Role)
     private roleModel: typeof Role,
     @InjectModel(Permission)
@@ -83,6 +86,29 @@ export class AuthService {
         console.error('Error in login: ', error);
         return;
     }
+  }
+
+  async logout(token: string): Promise<void> {
+    try {
+      const decodedToken: any = this.jwtService.decode(token);
+      const expiresAt = new Date(decodedToken.exp * 1000);
+
+      await this.blacklistedTokenModel.create({
+        token,
+        blacklistedAt: new Date(),
+        expiresAt,
+      });
+    } catch (error) {
+      console.error('Logout error:', error);
+      throw new UnauthorizedException('Invalid token');
+    }
+  }
+
+  async isTokenBlacklisted(token: string): Promise<boolean> {
+    const blacklistedToken = await this.blacklistedTokenModel.findOne({
+      where: { token }
+    });
+    return !!blacklistedToken;
   }
 
   // Check if user has required permission for a resource and action

@@ -6,6 +6,7 @@ import { User } from "./entities/user.entity";
 import { USER_REPO } from "src/common/constant";
 import { Role } from "src/auth/entities/role.entity";
 import { CreateStaffDto, UpdateUserDto } from "./dto/user.dto";
+import { PartialUser } from "./interfaces/user.interface";
 
 @Injectable()
 export class UserService {
@@ -94,14 +95,20 @@ export class UserService {
     }
 
     async findAll(): Promise<User[]> {
-        const users = await this.usersRepo.findAll();
-        return users;
+        return this.usersRepo.findAll();
+      }
+    
+    async findOne(id: string): Promise<PartialUser> {
+        const user = await this.usersRepo.findOne({
+            raw: true,
+            nest: false,
+            attributes: ['name', 'email', 'contact_info', 'role_id'],
+            where: { 
+                user_id: id
+            } 
+        });
+        return user;
     }
-
-    // async findOne(id: string): Promise<User> {
-    //     const user = await this.usersRepo.findOne({ where: { user_id: id } });
-    //     return user;
-    // }
 
     // async create(createUserDto: CreateUserDto): Promise<User> {
     //     const user = await this.usersRepo.create(createUserDto);

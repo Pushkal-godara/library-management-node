@@ -1,4 +1,4 @@
-import { Table, Column, Model, DataType, AllowNull, BelongsToMany } from "sequelize-typescript";
+import { Table, Column, Model, BelongsToMany } from "sequelize-typescript";
 
 import { Role } from "./role.entity";
 import { RolePermission } from "./role-permission.entity";

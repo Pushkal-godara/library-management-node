@@ -1,12 +1,14 @@
-import { Controller, Post, Body, UseGuards, Get } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Get, Headers } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { GetRoleDto, LoginDto, SignupDto } from './dto/auth.dto';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { authorize } from 'passport';
 
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) { }
 
   @Post('signup')
   @ApiBody({ type: SignupDto })
@@ -24,5 +26,12 @@ export class AuthController {
   @ApiBody({ type: GetRoleDto })
   async getRolePermissions(@Body() getRoleDto: GetRoleDto) {
     return this.authService.getRolePermissions(getRoleDto.role_id);
+  }
+
+  @Post('logout')
+  @UseGuards(JwtAuthGuard)
+  async logout(@Headers('authorization') authorization: string) {
+      const token = authorization.replace('Bearer ', '');
+      return this.authService.logout(token);
   }
 }

@@ -7,10 +7,11 @@ import { UserProviders } from "./user.provider";
 import { Role } from "src/auth/entities/role.entity";
 import { Permission } from "src/auth/entities/permission.entity";
 import { AuthModule } from "src/auth/auth.module";
+import { CacheModule } from "@nestjs/cache-manager";
 
 
 @Module({
-    imports: [SequelizeModule.forFeature([User, Role, Permission]), AuthModule],
+    imports: [SequelizeModule.forFeature([User, Role, Permission]), AuthModule, CacheModule.register()],
     controllers: [UserController],
     providers: [UserService, ...UserProviders],
     exports: [UserService, ...UserProviders],
