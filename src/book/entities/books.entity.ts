@@ -1,4 +1,5 @@
-import { Table, Column, Model, DataType, AllowNull } from "sequelize-typescript";
+import { Table, Column, Model, DataType, AllowNull, ForeignKey, BelongsTo } from "sequelize-typescript";
+import { Author } from "./author.entity";
 
 @Table({
     tableName: 'books',
@@ -20,13 +21,27 @@ export class Book extends Model<Book> {
     })
     title: string;
 
+    @ForeignKey(() => Author)
     @Column({
         type: DataType.STRING
     })
-    author: string;
+    author_id: string;
+
+    @Column({
+        type: DataType.TEXT
+    })
+    image_url: string;
+
+    @Column({
+        type: DataType.TEXT
+    })
+    description: string;
 
     @Column({
         type: DataType.INTEGER
     })
     publication_year: number;
+
+    @BelongsTo(() => Author)
+    author: Author;
 }
