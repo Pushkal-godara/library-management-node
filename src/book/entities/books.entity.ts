@@ -9,11 +9,11 @@ export class Book extends Model<Book> {
 
     // Contain book details
     @Column({
-        type: DataType.UUID,
-        defaultValue: DataType.UUIDV4,
+        type: DataType.INTEGER,
+        autoIncrement: true,
         primaryKey: true
     })
-    book_id: string;
+    book_id: number;
 
     @AllowNull(false)
     @Column({
@@ -23,9 +23,9 @@ export class Book extends Model<Book> {
 
     @ForeignKey(() => Author)
     @Column({
-        type: DataType.STRING
+        type: DataType.INTEGER
     })
-    author_id: string;
+    author_id: number;
 
     @Column({
         type: DataType.TEXT

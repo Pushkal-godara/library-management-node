@@ -2,5 +2,5 @@ const path = require('path');
 
 module.exports = {
   'seeders-path': path.resolve('src/database/seeders'),
-  'config': path.resolve('src/database/config.js'),
+  'config': path.resolve('src/config/database.config.js'),
 }

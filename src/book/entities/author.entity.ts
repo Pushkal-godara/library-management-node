@@ -1,4 +1,4 @@
-import { Column, DataType, HasMany, Model, Table } from "sequelize-typescript";
+import { AutoIncrement, Column, DataType, HasMany, Model, Table } from "sequelize-typescript";
 import { Book } from "./books.entity";
 
 @Table({
@@ -8,11 +8,11 @@ import { Book } from "./books.entity";
 
 export class Author extends Model {
         @Column({
-            type: DataType.UUID,
-            defaultValue: DataType.UUIDV4,
+            type: DataType.INTEGER,
+            autoIncrement: true,
             primaryKey: true
         })
-        author_id: string;
+        author_id: number;
 
         @Column({
             type: DataType.STRING,

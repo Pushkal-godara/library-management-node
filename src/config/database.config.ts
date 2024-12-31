@@ -13,6 +13,7 @@ import { Reservation } from '../reservation/entities/reservation.entity';
 import { Role } from 'src/auth/entities/role.entity';
 import { Permission } from 'src/auth/entities/permission.entity';
 import { RolePermission } from 'src/auth/entities/role-permission.entity';
+import { Author } from 'src/book/entities/author.entity';
 
 export const databaseConfig: SequelizeModuleOptions = {
   dialect: 'mysql',
@@ -36,6 +37,7 @@ export const databaseConfig: SequelizeModuleOptions = {
     Role,
     Permission,
     RolePermission,
+    Author
   ],
   autoLoadModels: true,
   synchronize: false,
