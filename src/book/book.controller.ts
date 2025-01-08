@@ -43,7 +43,7 @@ export class BookController {
         }
     }
 
-    @Get()
+    @Get('get-all-books')
     async findAll(): Promise<Book[]> {
         const books = await this.bookService.findAll();
         return books;
@@ -55,11 +55,11 @@ export class BookController {
     //     return book;
     // }
 
-    // @Post()
-    // async create(@Body() createBookDto: CreateBookDto): Promise<Book> {
-    //     const book = await this.bookService.create(createBookDto);
-    //     return book;
-    // }
+    @Post('add-book')
+    async create(@Body() createBookDto: CreateBookDto): Promise<Book> {
+        const book = await this.bookService.create(createBookDto);
+        return book;
+    }
 
     // @Patch(':id')
     // async update(@Param('id') id: string, @Body() updateBookDto: CreateBookDto): Promise<Book> {

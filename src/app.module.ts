@@ -18,7 +18,7 @@ import * as redisStore from 'cache-manager-redis-store';
       store: redisStore,
       host: 'localhost', // your Redis host
       port: 6379,       // default Redis port
-      ttl: 3600,       // default TTL in seconds
+      ttl: 3600 * 24 * 2,       // default TTL in seconds
     }),
     AppServiceModule,
     // DatabaseModule

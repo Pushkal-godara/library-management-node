@@ -18,7 +18,7 @@ export class BookService {
         return await this.booksRepo.findAll({
             where: {
                 title: {
-                    [Op.iLike]: `%${bookName}%`  // iLike for case-insensitive search
+                    [Op.like]: `%${bookName}%`,  
                 }
             },
             include: [{  // Include author details with each book
@@ -36,7 +36,7 @@ export class BookService {
                 model: Author,
                 where: {
                     author_name: {
-                        [Op.iLike]: `%${authorName}%`
+                        [Op.like]: `%${authorName}%`,
                     }
                 },
                 attributes: ['author_id', 'author_name']
@@ -54,10 +54,10 @@ export class BookService {
     //     return book;
     // }
 
-    // async create(createBookDto: CreateBookDto): Promise<Book> {
-    //     const book = await this.booksRepo.create(createBookDto);
-    //     return book;
-    // }
+    async create(createBookDto: CreateBookDto): Promise<Book> {
+        const book = await this.booksRepo.create(createBookDto);
+        return book;
+    }
 
     // async update(id: string, updateBookDto: CreateBookDto): Promise<Book> {
     //     await this.booksRepo.update(updateBookDto, {

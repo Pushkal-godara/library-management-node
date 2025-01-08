@@ -21,7 +21,7 @@ import { BlacklistedToken } from "./entities/blacklisted-token.entity";
         inject: [ConfigService],
         useFactory: (configService: ConfigService) => ({
           secret: configService.get('SECRET'),
-          signOptions: { expiresIn: '1h' },
+          signOptions: { expiresIn: '72h' },
         }),
       }),
     ],

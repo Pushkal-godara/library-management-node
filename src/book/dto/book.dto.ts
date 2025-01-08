@@ -11,13 +11,9 @@ export class CreateBookDto {
   @IsNotEmpty()
   title: string;
 
-  @IsNotEmpty()
-  @ApiProperty({
-    description: 'Author of the book',
-    example: 'F. Scott Fitzgerald'
-  })
+  @ApiProperty()
   @IsString()
-  author: string;
+  description: string;
 
   @ApiProperty({
     description: 'Publication year of the book',
