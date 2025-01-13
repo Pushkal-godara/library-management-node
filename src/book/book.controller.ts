@@ -1,4 +1,4 @@
-import { Controller, Get, Put, Post, Delete, Body, Param, Patch, Query } from '@nestjs/common';
+import { Controller, Get, Put, Post, Delete, Body, Param, Patch, Query, DefaultValuePipe, ParseIntPipe } from '@nestjs/common';
 import { Book } from './entities/books.entity';
 import { BookService } from './book.service';
 import { CreateBookDto } from './dto/book.dto';
@@ -44,8 +44,11 @@ export class BookController {
     }
 
     @Get('get-all-books')
-    async findAll(): Promise<Book[]> {
-        const books = await this.bookService.findAll();
+    async findAll(
+        @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+        @Query('limit', new DefaultValuePipe(6), ParseIntPipe) limit: number,
+    ): Promise<PaginatedResponse<Book>> {
+        const books = await this.bookService.findAll(page, limit);
         return books;
     }
 

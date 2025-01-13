@@ -18,7 +18,7 @@ export class BookService {
         return await this.booksRepo.findAll({
             where: {
                 title: {
-                    [Op.like]: `%${bookName}%`,  
+                    [Op.like]: `%${bookName}%`,
                 }
             },
             include: [{  // Include author details with each book
@@ -44,10 +44,28 @@ export class BookService {
         });
     }
 
-    async findAll(): Promise<Book[]> {
-        const books = await this.booksRepo.findAll();
-        return books;
-    }
+    async findAll(page: number, limit: number): Promise<PaginatedResponse<Book>> {
+        const offset = (page - 1) * limit;
+        
+        // For Sequelize, we use findAndCountAll to get both data and total count
+        const { count, rows: books } = await this.booksRepo.findAndCountAll({
+          offset: offset,
+          limit: limit,
+          order: [['createdAt', 'DESC']], // Optional: for sorting
+        });
+      
+        const totalPages = Math.ceil(count / limit);
+      
+        return {
+          data: books,
+          meta: {
+            total: count,
+            page,
+            limit,
+            totalPages
+          }
+        };
+      }
 
     // async findOne(id: string): Promise<Book> {
     //     const book = await this.booksRepo.findOne({ where: { book_id: id } });
