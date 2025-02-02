@@ -13,12 +13,41 @@ import { ReservationModule } from "./reservation/reservation.module";
 import { BookModule } from "./book/book.module";
 import { LoanModule } from "./loan/loan.module";
 import { StudentModule } from "./student/student.module";
+import { ReportsModule } from "./reports/reports.module";
 
 
 @Module({
-    imports: [ AuthModule, UserModule, AdminModule, LibrarianModule, AuditlogModule, CatalogModule, FeedbackModule, FineModule, NotificationModule, ReservationModule, BookModule, LoanModule, StudentModule],
+    imports: [ 
+        AuthModule,
+        UserModule, 
+        AdminModule, 
+        LibrarianModule, 
+        AuditlogModule, 
+        CatalogModule, 
+        FeedbackModule, 
+        FineModule, 
+        NotificationModule, 
+        ReservationModule, 
+        BookModule, 
+        LoanModule, 
+        StudentModule, 
+        ReportsModule
+    ],
     exports: [
-        AuthModule, UserModule, AdminModule, LibrarianModule, AuditlogModule, CatalogModule, FeedbackModule, FineModule, NotificationModule, ReservationModule, BookModule, LoanModule, StudentModule
+        AuthModule, 
+        UserModule, 
+        AdminModule, 
+        LibrarianModule, 
+        AuditlogModule, 
+        CatalogModule, 
+        FeedbackModule, 
+        FineModule, 
+        NotificationModule, 
+        ReservationModule, 
+        BookModule, 
+        LoanModule, 
+        StudentModule,
+        ReportsModule
     ],
 })
 export class AppServiceModule {}

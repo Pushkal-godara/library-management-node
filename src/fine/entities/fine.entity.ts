@@ -1,6 +1,7 @@
-import { Table, Column, Model, DataType, ForeignKey, IsUUID, BelongsTo } from "sequelize-typescript";
+import { Table, Column, Model, DataType, ForeignKey, IsUUID, BelongsTo, HasMany } from "sequelize-typescript";
 import { Loan } from "../../loan/entities/loan.entity";
 import { User } from "src/user/entities/user.entity";
+import { FineHistory } from "./fines_history.entity";
 
 @Table({
     tableName: 'fines',
@@ -10,11 +11,11 @@ export class Fine extends Model<Fine> {
     // Tracks fines for overdue books.Manages the payment status of those fines.
 
     @Column({
-        type: DataType.UUID,
-        defaultValue: DataType.UUIDV4,        
-        primaryKey: true,
+        type: DataType.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
     })
-    fine_id: string;
+    fine_id: number;
 
     @ForeignKey(() => User)
     @IsUUID(4)
@@ -24,11 +25,10 @@ export class Fine extends Model<Fine> {
     user_id: string;
 
     @ForeignKey(() => Loan)
-    @IsUUID(4)
     @Column({
-        type: DataType.UUID
+        type: DataType.INTEGER
     })
-    loan_id: string;
+    loan_id: number;
   
     @Column({
         type: DataType.INTEGER
@@ -50,4 +50,7 @@ export class Fine extends Model<Fine> {
 
     @BelongsTo(() => Loan)
     loan: Loan;
+
+    @HasMany(() => FineHistory)
+    post: FineHistory[];
 }

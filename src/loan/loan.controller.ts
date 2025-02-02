@@ -22,16 +22,16 @@ export class LoanController {
     }
 
     @Post()
-    async create(@Body() createLoanDto: CreateLoanDto): Promise<Loan> {
-        const loan = await this.loanService.create(createLoanDto);
-        return loan;
-    }
+    // async create(@Body() createLoanDto: CreateLoanDto): Promise<Loan> {
+    //     const loan = await this.loanService.create(createLoanDto);
+    //     return loan;
+    // }
 
     @Patch(':id')
-    async update(@Param('id') id: string, @Body() updateLoanDto: CreateLoanDto): Promise<Loan> {
-        const loan = await this.loanService.update(id, updateLoanDto);
-        return loan;
-    }
+    // async update(@Param('id') id: string, @Body() updateLoanDto: CreateLoanDto): Promise<Loan> {
+    //     const loan = await this.loanService.update(id, updateLoanDto);
+    //     return loan;
+    // }
 
     @Delete(':id')
     async remove(@Param('id') id: string): Promise<void> {

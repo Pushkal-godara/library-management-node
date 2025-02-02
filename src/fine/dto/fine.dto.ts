@@ -11,12 +11,9 @@ export class CreateFineDto {
   @IsUUID()
   user_id: string;
 
-  @ApiProperty({
-    description: 'UUID of the loan associated with the fine',
-    example: 'c0fbbd99-9c0b-4ef8-bb6d-8bb9bd380a33',
-  })
-  @IsUUID()
-  loan_id: string;
+  @ApiProperty({})
+  @IsInt()
+  loan_id: number;
 
   @ApiProperty({
     description: 'Amount of the fine',

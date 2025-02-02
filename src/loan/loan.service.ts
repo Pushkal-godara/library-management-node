@@ -20,18 +20,18 @@ export class LoanService {
         return loan;
     }
 
-    async create(createLoanDto: CreateLoanDto): Promise<Loan> {
-        const loan = await this.loanRepo.create(createLoanDto);
-        return loan;
-    }
+    // async create(createLoanDto: CreateLoanDto): Promise<Loan> {
+    //     const loan = await this.loanRepo.create(createLoanDto);
+    //     return loan;
+    // }
 
-    async update(id: string, updateLoanDto: CreateLoanDto): Promise<Loan> {
-        await this.loanRepo.update(updateLoanDto, {
-            where: { loan_id: id },
-        });
-        const updatedLoan = await this.loanRepo.findOne({ where: { loan_id: id } });
-        return updatedLoan;
-    }
+    // async update(id: string, updateLoanDto: CreateLoanDto): Promise<Loan> {
+    //     await this.loanRepo.update(updateLoanDto, {
+    //         where: { loan_id: id },
+    //     });
+    //     const updatedLoan = await this.loanRepo.findOne({ where: { loan_id: id } });
+    //     return updatedLoan;
+    // }
 
     async remove(id: string): Promise<void> {
         await this.loanRepo.destroy({ where: { loan_id: id } });
