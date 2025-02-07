@@ -1,39 +1,94 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Inject, Injectable } from "@nestjs/common";
 import { Loan } from "./entities/loan.entity";
-import { CreateLoanDto } from "./dto/loan.dto";
+import { CreateLoanDto, LoanStatus, ReturnBookDto } from "./dto/loan.dto";
 import { LOAN_REPO } from "src/common/constant";
 
 @Injectable()
 export class LoanService {
     constructor(
         @Inject(LOAN_REPO)
-        private loanRepo: typeof Loan,
-    ) {}
+        private loanModel: typeof Loan,
+    ) { }
 
-    async findAll(): Promise<Loan[]> {
-        const loans = await this.loanRepo.findAll();
-        return loans;
+    // Function to borrow a book
+    async borrowBook(createLoanDto: CreateLoanDto) {
+        try {
+            // 1. Check if book exists in loan table
+            const existingLoan = await this.loanModel.findOne({
+                where: { book_id: createLoanDto.book_id }
+            });
+
+            if (existingLoan) {
+                // Check if book is available to borrow
+                if (existingLoan.status == LoanStatus.AVAILABLE || LoanStatus.RETURNED) {
+                    // Update existing record
+                    await existingLoan.update({
+                        user_id: createLoanDto.user_id,
+                        issue_date: createLoanDto.issue_date,
+                        due_date: createLoanDto.due_date,
+                        return_date: null,
+                        status: LoanStatus.BORROWED
+                    });
+                    return existingLoan;
+                } else {
+                    throw new HttpException(
+                        'Book is not available for borrowing',
+                        HttpStatus.BAD_REQUEST
+                    );
+                }
+            }
+
+            // 2. If book doesn't exist in loan table, create new record
+            const newLoan = await this.loanModel.create({
+                user_id: createLoanDto.user_id,
+                book_id: createLoanDto.book_id,
+                issue_date: createLoanDto.issue_date,
+                due_date: createLoanDto.due_date,
+                return_date: null,
+                status: LoanStatus.BORROWED
+            });
+
+            return newLoan;
+        } catch (error) {
+            throw new HttpException(
+                error.message || 'Failed to borrow book',
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
     }
 
-    async findOne(id: string): Promise<Loan> {
-        const loan = await this.loanRepo.findOne({ where: { loan_id: id } });
-        return loan;
-    }
+    // Function to return a book
+    async returnBook(returnBookDto: ReturnBookDto) {
+        try {
+            // Find the loan record
+            const loan = await this.loanModel.findOne({
+                where: {
+                    book_id: returnBookDto.book_id,
+                    user_id: returnBookDto.user_id,
+                    status: LoanStatus.BORROWED
+                }
+            });
 
-    // async create(createLoanDto: CreateLoanDto): Promise<Loan> {
-    //     const loan = await this.loanRepo.create(createLoanDto);
-    //     return loan;
-    // }
+            if (!loan) {
+                throw new HttpException(
+                    'No active loan found for this book and user',
+                    HttpStatus.NOT_FOUND
+                );
+            }
 
-    // async update(id: string, updateLoanDto: CreateLoanDto): Promise<Loan> {
-    //     await this.loanRepo.update(updateLoanDto, {
-    //         where: { loan_id: id },
-    //     });
-    //     const updatedLoan = await this.loanRepo.findOne({ where: { loan_id: id } });
-    //     return updatedLoan;
-    // }
+            // Update the loan record
+            await loan.update({
+                user_id: null,
+                return_date: new Date(),
+                status: LoanStatus.AVAILABLE
+            });
 
-    async remove(id: string): Promise<void> {
-        await this.loanRepo.destroy({ where: { loan_id: id } });
+            return loan;
+        } catch (error) {
+            throw new HttpException(
+                error.message || 'Failed to return book',
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
     }
 }

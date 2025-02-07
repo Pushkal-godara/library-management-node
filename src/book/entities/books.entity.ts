@@ -1,5 +1,6 @@
-import { Table, Column, Model, DataType, AllowNull, ForeignKey, BelongsTo } from "sequelize-typescript";
+import { Table, Column, Model, DataType, AllowNull, ForeignKey, BelongsTo, HasMany } from "sequelize-typescript";
 import { Author } from "./author.entity";
+import { Loan } from "src/loan/entities/loan.entity";
 
 @Table({
     tableName: 'books',
@@ -44,4 +45,7 @@ export class Book extends Model<Book> {
 
     @BelongsTo(() => Author)
     author: Author;
+
+    @HasMany(() => Loan)
+    loans: Loan[];
 }

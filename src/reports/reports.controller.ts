@@ -1,7 +1,9 @@
 import { Controller, Get, Param, HttpException, HttpStatus, Post, Body } from '@nestjs/common';
 import { ReportsService } from './reports.service';
 import { CreateFineDto } from './dto/reports.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Reports')
 @Controller('reports')
 export class ReportsController {
   constructor(private readonly reportsService: ReportsService) {}
@@ -17,6 +19,22 @@ export class ReportsController {
     } catch (error) {
       throw new HttpException(
         'Failed to generate availability report',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Get('books/available-to-borrow')
+  async getBooksAvailableToBorrow() {
+    try {
+      const books = await this.reportsService.availableBooks();
+      return {
+        success: true,
+        data: books
+    };
+    } catch (error) {
+      throw new HttpException(
+        'Failed to get available books',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
@@ -53,6 +71,23 @@ export class ReportsController {
       );
     }
   }
+
+  @Post('generate-overdue')
+  async generateFinesForOverdueBooks() {
+    try {
+        const result = await this.reportsService.createFinesForOverdueBooks();
+        return {
+            success: true,
+            message: 'Fines generated successfully',
+            data: result
+        };
+    } catch (error) {
+        throw new HttpException(
+            'Failed to generate fines',
+            HttpStatus.INTERNAL_SERVER_ERROR
+        );
+    }
+}
 
   @Post('generate-fine/byFineId')
   async generateFineByFineId(@Body() generateFineDto: CreateFineDto) {

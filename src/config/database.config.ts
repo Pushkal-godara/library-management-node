@@ -15,7 +15,6 @@ import { Role } from 'src/auth/entities/role.entity';
 import { Permission } from 'src/auth/entities/permission.entity';
 import { RolePermission } from 'src/auth/entities/role-permission.entity';
 import { Author } from 'src/book/entities/author.entity';
-import { ReportsModule } from 'src/reports/reports.module';
 
 export const databaseConfig: SequelizeModuleOptions = {
   dialect: 'mysql',
