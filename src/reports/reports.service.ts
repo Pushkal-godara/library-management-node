@@ -1,9 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Book } from '../book/entities/books.entity';
 import { Loan } from '../loan/entities/loan.entity';
 import { Fine } from '../fine/entities/fine.entity';
-import { FineHistory } from '../fine/entities/fines_history.entity';
 import { Op } from 'sequelize';
 import { User } from 'src/user/entities/user.entity';
 import { CreateFineDto } from './dto/reports.dto';
@@ -17,10 +16,6 @@ export class ReportsService {
         private bookModel: typeof Book,
         @InjectModel(Loan)
         private loanModel: typeof Loan,
-        @InjectModel(Fine)
-        private fineModel: typeof Fine,
-        @InjectModel(FineHistory)
-        private fineHistoryModel: typeof FineHistory,
     ) { }
 
     async getBookAvailabilityReport() {
@@ -91,92 +86,76 @@ export class ReportsService {
             return allAvailableBooks;
     
         } catch (error) {
-            console.error('Error fetching available books:', error);
+            console.error('Error fetching available books: ', error);
             throw error;
         }
     }
 
-    async getStudentFineReport(studentId: string) {
-        return await this.fineModel.findAll({
-            where: { user_id: studentId },
-            include: [
-                {
-                    model: Loan,
-                    include: [Book],
+    async getOverdueReportByUserId(userId: string) {
+        try {
+            // Get all loans for the user with BORROWED status
+            const userLoans = await this.loanModel.findAll({
+                where: {
+                    user_id: userId,
+                    status: LoanStatus.BORROWED
                 },
-                {
-                    model: FineHistory,
-                },
-            ],
-        });
+                include: [{
+                    model: Book,
+                    attributes: ['title', 'book_id']  // Include book details
+                }]
+            });
+    
+            const currentDate = new Date();
+            const overdueItems = [];
+    
+            // Calculate fines for overdue items
+            for (const loan of userLoans) {
+                const dueDate = new Date(loan.due_date);
+                
+                // Check if the book is overdue
+                if (dueDate < currentDate) {
+                    const fineAmount = this.calculateFineAmount(dueDate, currentDate);
+                    
+                    overdueItems.push({
+                        loan_id: loan.loan_id,
+                        book_id: loan.book_id,
+                        book_title: loan.book?.title,
+                        book_author: loan.book?.author,
+                        due_date: loan.due_date,
+                        days_overdue: Math.floor(
+                            (currentDate.getTime() - dueDate.getTime()) / (1000 * 60 * 60 * 24)
+                        ),
+                        fine_amount: fineAmount
+                    });
+                }
+            }
+    
+            // Calculate total fine
+            const totalFine = overdueItems.reduce((sum, item) => sum + item.fine_amount, 0);
+    
+            // Return the report
+            return {
+                user_id: userId,
+                total_overdue_items: overdueItems.length,
+                total_fine: totalFine,
+                overdue_items: overdueItems,
+                generated_at: currentDate
+            };
+    
+        } catch (error) {
+            throw new HttpException(
+                error.message || 'Failed to generate overdue report',
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
     }
 
-    async getOverdueReport() {
-        return await this.loanModel.findAll({
-            where: {
-                due_date: {
-                    [Op.lt]: new Date(),
-                },
-                return_date: null,
-            },
-            include: [Book, User],
-        });
-    }
-
-    calculateFineAmount(dueDate: Date, returnDate: Date): number {
+    calculateFineAmount(dueDate: Date, currentDate: Date): number {
         const days = Math.floor(
-            (returnDate.getTime() - dueDate.getTime()) / (1000 * 60 * 60 * 24),
+            (currentDate.getTime() - dueDate.getTime()) / (1000 * 60 * 60 * 24),
         );
         const DAILY_RATE = 1; // $1 per day
         return Math.max(0, days * DAILY_RATE);
     }
 
-    async createFinePayment(createFineDto: CreateFineDto) {
-        return await this.fineHistoryModel.create({
-            fine_id: createFineDto.fine_id,
-            amount_paid: createFineDto.amount_paid,
-            payment_method: createFineDto.payment_method,
-            payment_date: new Date(),
-            transaction_reference: `TXN-${Date.now()}`,
-        });
-    }
-
-    async createFinesForOverdueBooks() {
-        // Find all overdue loans
-        const overdueLoans = await this.loanModel.findAll({
-            where: {
-                status: 'BORROWED',
-                due_date: {
-                    [Op.lt]: new Date()
-                },
-                return_date: null
-            }
-        });
-
-        const generatedFines = [];
-
-        // Create fine records for each overdue loan
-        for (const loan of overdueLoans) {
-            const daysOverdue = Math.floor(
-                (new Date().getTime() - loan.due_date.getTime()) / (1000 * 60 * 60 * 24)
-            );
-            const DAILY_RATE = 1;
-            const fineAmount = daysOverdue * DAILY_RATE;
-
-            const fine = await this.fineModel.create({
-                user_id: loan.user_id,
-                loan_id: loan.loan_id,
-                amount: fineAmount,
-                payment_status: 'PENDING',
-                issue_date: new Date(),
-            });
-
-            generatedFines.push(fine);
-        }
-
-        return {
-            totalFinesGenerated: generatedFines.length,
-            fines: generatedFines
-        };
-    }
 }

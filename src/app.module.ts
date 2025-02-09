@@ -23,11 +23,11 @@ import * as redisStore from 'cache-manager-redis-store';
     AppServiceModule,
     // DatabaseModule
   ],
-  providers: [
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: CacheInterceptor,
-    },
-  ],
+  // providers: [
+  //   {
+  //     provide: APP_INTERCEPTOR,
+  //     useClass: CacheInterceptor,
+  //   },
+  // ],
 })
 export class AppModule {}
