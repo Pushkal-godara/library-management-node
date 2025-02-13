@@ -51,7 +51,7 @@ export class BookService {
         const { count, rows: books } = await this.booksRepo.findAndCountAll({
           offset: offset,
           limit: limit,
-          order: [['createdAt', 'DESC']], // Optional: for sorting
+          order: [['createdAt', 'DESC']], 
         });
       
         const totalPages = Math.ceil(count / limit);

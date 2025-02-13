@@ -63,15 +63,4 @@ export class BookController {
         const book = await this.bookService.create(createBookDto);
         return book;
     }
-
-    // @Patch(':id')
-    // async update(@Param('id') id: string, @Body() updateBookDto: CreateBookDto): Promise<Book> {
-    //     const book = await this.bookService.update(id, updateBookDto);
-    //     return book;
-    // }
-
-    // @Delete(':id')
-    // async remove(@Param('id') id: string): Promise<void> {
-    //     await this.bookService.remove(id);
-    // }
 }

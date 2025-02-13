@@ -1,4 +1,4 @@
-import { Controller, Get, Param, HttpException, HttpStatus, Post, Body } from '@nestjs/common';
+import { Controller, Get, Param, HttpException, HttpStatus, Post, Body, Query, DefaultValuePipe, ParseIntPipe } from '@nestjs/common';
 import { ReportsService } from './reports.service';
 import { CreateFineDto } from './dto/reports.dto';
 import { ApiTags } from '@nestjs/swagger';
@@ -25,13 +25,22 @@ export class ReportsController {
   }
 
   @Get('books/available-to-borrow')
-  async getBooksAvailableToBorrow() {
+  async getBooksAvailableToBorrow(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('limit', new DefaultValuePipe(5), ParseIntPipe) limit: number,
+  ) {
     try {
-      const books = await this.reportsService.availableBooks();
+      const { books, total } = await this.reportsService.availableBooks(page, limit);
       return {
         success: true,
-        data: books
-    };
+        data: books,
+        pagination: {
+          total,
+          page,
+          limit,
+          totalPages: Math.ceil(total / limit)
+        }
+      };
     } catch (error) {
       throw new HttpException(
         'Failed to get available books',
@@ -40,8 +49,8 @@ export class ReportsController {
     }
   }
 
-  @Get('overdue-reports/:userId')
-  async getOverdueReportByUserId(@Param('userId') userId: string) {
+  @Get('/overdue-reports')
+  async getOverdueReportByUserId(@Query('userId') userId: string) {
     console.log('USER ID ==>> ', userId);
     try {
       const report = await this.reportsService.getOverdueReportByUserId(userId);

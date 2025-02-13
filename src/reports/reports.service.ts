@@ -35,8 +35,10 @@ export class ReportsService {
         };
     }
 
-    async availableBooks() {
+    async availableBooks(page: number = 1, limit: number = 5) {
         try {
+            const offset = (page - 1) * limit;
+    
             // First, get book_ids that are RETURNED or AVAILABLE from Loan table
             const availableFromLoans = await Loan.findAll({
                 where: {
@@ -56,34 +58,27 @@ export class ReportsService {
             });
     
             const loanedBookIds = allLoanedBooks.map(loan => loan.book_id);
-    
-            // Get books that have never been loaned
-            const neverLoanedBooks = await Book.findAll({
-                attributes: ['book_id', 'title', 'description', 'author_id', 'image_url', 'publication_year'],
-                where: {
-                    book_id: {
-                        [Op.notIn]: loanedBookIds
-                    }
-                },
-                raw: true
-            });
-    
-            // Get the complete books data for available and returned books
             const availableBookIds = availableFromLoans.map(loan => loan.book_id);
-            const availableLoanedBooks = await Book.findAll({
+            
+            // Single query with pagination for both available and never-loaned books
+            const { rows: books, count: total } = await Book.findAndCountAll({
                 attributes: ['book_id', 'title', 'description', 'author_id', 'image_url', 'publication_year'],
                 where: {
-                    book_id: {
-                        [Op.in]: availableBookIds
-                    }
+                    [Op.or]: [
+                        { book_id: { [Op.in]: availableBookIds } },
+                        { book_id: { [Op.notIn]: loanedBookIds } }
+                    ]
                 },
-                raw: true
+                limit,
+                offset,
+                raw: true,
+                order: [['book_id', 'ASC']]
             });
     
-            // Combine both results
-            const allAvailableBooks = [...availableLoanedBooks, ...neverLoanedBooks];
-    
-            return allAvailableBooks;
+            return {
+                books,
+                total
+            };
     
         } catch (error) {
             console.error('Error fetching available books: ', error);
