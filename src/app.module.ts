@@ -19,15 +19,10 @@ import * as redisStore from 'cache-manager-redis-store';
       host: 'localhost', // your Redis host
       port: 6379,       // default Redis port
       ttl: 3600 * 24 * 2,       // default TTL in seconds
+      isGlobal: true
     }),
     AppServiceModule,
     // DatabaseModule
   ],
-  // providers: [
-  //   {
-  //     provide: APP_INTERCEPTOR,
-  //     useClass: CacheInterceptor,
-  //   },
-  // ],
 })
 export class AppModule {}

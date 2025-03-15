@@ -2,12 +2,8 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Book } from '../book/entities/books.entity';
 import { Loan } from '../loan/entities/loan.entity';
-import { Fine } from '../fine/entities/fine.entity';
 import { Op } from 'sequelize';
-import { User } from 'src/user/entities/user.entity';
-import { CreateFineDto } from './dto/reports.dto';
 import { LoanStatus } from '../loan/dto/loan.dto';
-import { Author } from 'src/book/entities/author.entity';
 
 @Injectable()
 export class ReportsService {
@@ -40,7 +36,7 @@ export class ReportsService {
             const offset = (page - 1) * limit;
     
             // First, get book_ids that are RETURNED or AVAILABLE from Loan table
-            const availableFromLoans = await Loan.findAll({
+            const availableFromLoans = await this.loanModel.findAll({
                 where: {
                     status: {
                         [Op.in]: ['RETURNED', 'AVAILABLE']
@@ -51,7 +47,7 @@ export class ReportsService {
             });
     
             // Get all book_ids that have ever been in loans
-            const allLoanedBooks = await Loan.findAll({
+            const allLoanedBooks = await this.loanModel.findAll({
                 attributes: ['book_id'],
                 raw: true,
                 group: ['book_id']
@@ -61,7 +57,7 @@ export class ReportsService {
             const availableBookIds = availableFromLoans.map(loan => loan.book_id);
             
             // Single query with pagination for both available and never-loaned books
-            const { rows: books, count: total } = await Book.findAndCountAll({
+            const { rows: books, count: total } = await this.bookModel.findAndCountAll({
                 attributes: ['book_id', 'title', 'description', 'author_id', 'image_url', 'publication_year'],
                 where: {
                     [Op.or]: [

@@ -1,25 +1,28 @@
-import { Controller, Get, Put, Post, Delete, Body, Param, Patch, Req, UseGuards, UseInterceptors} from '@nestjs/common';
+import { Controller, Get, Put, Post, Delete, Body, Param, Patch, Req, UseGuards, UseInterceptors, Inject} from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { CacheInterceptor, CacheKey, CacheTTL, CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
 
 import { User } from './entities/user.entity';
 import { UserService } from './user.service';
 import { CreateStaffDto, UpdateUserDto } from './dto/user.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { CacheInterceptor, CacheKey, CacheTTL } from '@nestjs/cache-manager';
 import { PartialUser } from './interfaces/user.interface';
 
 
 @ApiTags('User')
 @Controller('users')
-@UseInterceptors(CacheInterceptor)
 export class UserController {
-    constructor(private readonly userService: UserService) {}
+    constructor(
+        private readonly userService: UserService,
+    ) {}
 
     @ApiBearerAuth('access_token')
     @UseGuards(JwtAuthGuard)
+    @UseInterceptors(CacheInterceptor)
+    @CacheKey('users:all')
+    @CacheTTL(3600  * 6)
     @Get('get-all-users')
-    @CacheKey('all_users_list')
-    @CacheTTL(3600)
     async findAll(): Promise<User[]> {
         const users = await this.userService.findAll();
         return users;
@@ -28,7 +31,7 @@ export class UserController {
     @ApiBearerAuth('access_token')
     @UseGuards(JwtAuthGuard)
     @Get('get-user-byId/:id')
-    @CacheKey('user_by_id')
+    // @CacheKey('user_by_id')
     @CacheTTL(3600)
     async findOne(@Param('id') id: string): Promise<PartialUser> {
         const user = await this.userService.findOne(id);

@@ -1,6 +1,5 @@
 import { Controller, Get, Param, HttpException, HttpStatus, Post, Body, Query, DefaultValuePipe, ParseIntPipe } from '@nestjs/common';
 import { ReportsService } from './reports.service';
-import { CreateFineDto } from './dto/reports.dto';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Reports')
